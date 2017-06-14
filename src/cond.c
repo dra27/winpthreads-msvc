@@ -38,6 +38,10 @@
 
 #include "pthread_compat.h"
 
+#ifdef _MSC_VER
+#define __sync_synchronize() MemoryBarrier()
+#endif
+
 int __pthread_shallcancel (void);
 
 static int do_sema_b_wait (HANDLE sema, int nointerrupt, DWORD timeout,CRITICAL_SECTION *cs, LONG *val);

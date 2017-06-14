@@ -69,6 +69,7 @@
 #include <time.h>
 
 #include <sys/timeb.h>
+#include <time.h>
 
 #include "pthread_compat.h"
 
@@ -157,6 +158,23 @@ extern "C" {
 #define PTHREAD_MUTEX_ADAPTIVE_NP	PTHREAD_MUTEX_FAST_NP
 #define PTHREAD_MUTEX_ERRORCHECK_NP	PTHREAD_MUTEX_ERRORCHECK
 #define PTHREAD_MUTEX_RECURSIVE_NP	PTHREAD_MUTEX_RECURSIVE
+
+
+#ifndef _MSC_VER
+#define likely(cond) __builtin_expect((cond) != 0, 1)
+#define unlikely(cond) __builtin_expect((cond) != 0, 0)
+#else
+#define likely(cond) cond
+#define unlikely(cond) cond
+#endif
+
+
+#ifdef _MSC_VER
+#define __sync_synchronize() MemoryBarrier()
+#define __sync_lock_test_and_set(ptr, val) (intptr_t)InterlockedExchangePointer((PVOID*)(ptr), (PVOID)(val))
+#define __sync_bool_compare_and_swap(ptr, cmp, new_val) InterlockedCompareExchangePointer((PVOID *)(ptr), (PVOID)(INT_PTR)(new_val), (PVOID)(INT_PTR)(cmp))
+#define __builtin_unreachable() UNREFERENCED_PARAMETER(0)
+#endif
 
 void * WINPTHREAD_API pthread_timechange_handler_np(void * dummy);
 int    WINPTHREAD_API pthread_delay_np (const struct timespec *interval);

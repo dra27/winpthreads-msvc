@@ -403,6 +403,8 @@ replace_spin_keys (pthread_spinlock_t *old, pthread_spinlock_t new)
 #define THREADID_LEN THREADERR_LEN + 66 + 1 + 1
       int i;
       char thread_id[THREADID_LEN] = THREADERR;
+
+
       _ultoa ((unsigned long) GetCurrentThreadId (), &thread_id[THREADERR_LEN], 10);
       for (i = THREADERR_LEN; thread_id[i] != '\0' && i < THREADID_LEN - 1; i++)
         {
@@ -1578,7 +1580,7 @@ pthread_create (pthread_t *th, const pthread_attr_t *attr, void *(* func)(void *
   HANDLE thrd = NULL;
   int redo = 0;
   struct _pthread_v *tv;
-  size_t ssize = 0;
+  unsigned ssize = 0;
   pthread_spinlock_t new_spin_keys = PTHREAD_SPINLOCK_INITIALIZER;
 
   if ((tv = pop_pthread_mem ()) == NULL)
@@ -1620,7 +1622,7 @@ pthread_create (pthread_t *th, const pthread_attr_t *attr, void *(* func)(void *
     {
       int inh = 0;
       tv->p_state = attr->p_state;
-      ssize = attr->s_size;
+      ssize = (unsigned)attr->s_size;
       pthread_attr_getinheritsched (attr, &inh);
       if (inh)
 	{
@@ -1835,7 +1837,7 @@ pthread_setname_np (pthread_t thread, const char *name)
       || tv->h == INVALID_HANDLE_VALUE)
     return ESRCH;
 
-  stored_name = strdup (name);
+  stored_name = _strdup (name);
   if (stored_name == NULL)
     return ENOMEM;
 
