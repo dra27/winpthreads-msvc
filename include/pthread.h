@@ -172,7 +172,7 @@ extern "C" {
 #ifdef _MSC_VER
 #define __sync_synchronize() MemoryBarrier()
 #define __sync_lock_test_and_set(ptr, val) (intptr_t)InterlockedExchangePointer((PVOID*)(ptr), (PVOID)(val))
-#define __sync_bool_compare_and_swap(ptr, cmp, new_val) InterlockedCompareExchangePointer((PVOID *)(ptr), (PVOID)(INT_PTR)(new_val), (PVOID)(INT_PTR)(cmp))
+#define __sync_bool_compare_and_swap(ptr, cmp, new_val) (InterlockedCompareExchangePointer((PVOID *)(ptr), (PVOID)(INT_PTR)(new_val), (PVOID)(INT_PTR)(cmp))==(PVOID)(INT_PTR)(cmp))
 #define __builtin_unreachable() UNREFERENCED_PARAMETER(0)
 #endif
 

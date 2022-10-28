@@ -43,7 +43,12 @@ typedef enum {
   Normal,
   Errorcheck,
   Recursive,
+#ifndef _MSC_VER
 } mutex_type_t;
+#else
+} mutex_type_e;
+typedef intptr_t mutex_type_t;
+#endif
 
 /* The heap-allocated part of a mutex. */
 typedef struct {
